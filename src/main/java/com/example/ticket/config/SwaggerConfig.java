@@ -11,13 +11,14 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
-    
+
     @Bean
     public OpenAPI api(){
         return new OpenAPI()
             .info(new Info()
-                    .title("TCG Project API Con Swagger")
-                    .version("1.0")
-                    .description("Documentacion generada con Springdoc OpenAPI"));
+            .title("API Tickets TCG Project")
+            .version("1.0")
+            .description("Ducmentacion hecha con Swagger para api de tickets"));
     }
+    
 }
