@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class TicketService {
@@ -48,7 +50,7 @@ public class TicketService {
     public Ticket getTicketById(Integer id) {
         return ticketRepository.findById(id)
                 .map(this::convertToTicket)
-                .orElse(null);
+                .orElseThrow(null);
     }
 
     public Ticket createTicket(Ticket ticket) {
@@ -58,12 +60,19 @@ public class TicketService {
     }
 
     public Ticket updateTicket(Ticket ticket) {
+        if (!ticketRepository.existsById(ticket.getId())) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "No se puede actualizar. ID no existe: " + ticket.getId());
+        }
         TicketEntity entityToUpdate = convertToTicketEntity(ticket);
         TicketEntity updatedEntity = ticketRepository.save(entityToUpdate);
         return convertToTicket(updatedEntity);
     }
 
     public void deleteTicket(Integer id) {
+        if (!ticketRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No se puede eliminar. ID no existe: " + id);
+        }
         ticketRepository.deleteById(id);
     }
 }

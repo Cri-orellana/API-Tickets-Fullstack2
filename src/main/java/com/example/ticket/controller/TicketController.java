@@ -8,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/tickets")
@@ -39,13 +37,8 @@ public class TicketController {
     @PutMapping("/{ticket}")
     @Operation(summary = "Actualizar un ticket existente", description = "Actualiza la información del ticket")
     public Ticket updateTicket(@PathVariable("ticket") Integer id, @RequestBody Ticket ticket) {
-        Ticket ticketRegistrado = ticketService.getTicketById(id);
-        if (ticketRegistrado != null) {
-            ticketRegistrado.setDescripcion(ticket.getDescripcion());
-            ticketRegistrado.setEstado(ticket.getEstado());
-            return ticketService.updateTicket(ticketRegistrado);
-        }
-        return null;
+        ticket.setId(id);
+        return ticketService.updateTicket(ticket);
     }
 
     @DeleteMapping("/{ticket}")

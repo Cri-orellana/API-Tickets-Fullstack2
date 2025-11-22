@@ -1,16 +1,9 @@
 package com.example.ticket.repository;
 
 import com.example.ticket.model.entity.TicketEntity;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TicketRepository extends JpaRepository<TicketEntity, Integer> {
-
-    TicketEntity findById(int id);
-
-    Boolean existsById(int id);
-
-    void deleteById(int id);
 }
