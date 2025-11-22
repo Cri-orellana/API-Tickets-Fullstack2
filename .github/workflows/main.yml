@@ -1,0 +1,48 @@
+name: maquinaJava
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Revisa repositorio
+        uses: actions/checkout@v4
+
+      - name: Crea carpeta en server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.IP_SERVER }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            mkdir -p /home/ubuntu/fs1001
+            chmod 755 /home/ubuntu/fs1001
+
+      - name: Sincroniza archivos en el server
+        uses: burnett01/rsync-deployments@7.0.2
+        with:
+          switches: "-avzh --delete --exclude=.git/"
+          path: "./"
+          remote_host: ${{ secrets.IP_SERVER }}
+          remote_user: ${{ secrets.USERNAME }}
+          remote_path: "/home/ubuntu/fs1001/"
+          remote_key: ${{ secrets.PRIVATE_KEY }}
+          remote_port: ${{ secrets.PORT }}
+
+      - name: Lanza containers docker
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.IP_SERVER }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /home/ubuntu/fs1001/demo
+
+            sudo docker compose down --remove-orphans --timeout 120
+            sudo docker compose up -d --build --force-recreate
+
+            sudo docker system prune -f
