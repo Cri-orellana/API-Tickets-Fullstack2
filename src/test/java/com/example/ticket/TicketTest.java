@@ -35,11 +35,17 @@ public class TicketTest {
 
         ticket = new Ticket();
         ticket.setId(1);
+        ticket.setNombre("Juan Perez");
+        ticket.setEmail("juan@test.com");
+        ticket.setAsunto("Problema Acceso");
         ticket.setDescripcion("Ticket de prueba");
         ticket.setEstado("ABIERTO");
 
         ticketEntity = new TicketEntity();
         ticketEntity.setId(1);
+        ticketEntity.setNombre("Juan Perez");
+        ticketEntity.setEmail("juan@test.com");
+        ticketEntity.setAsunto("Problema Acceso");
         ticketEntity.setDescripcion("Ticket de prueba");
         ticketEntity.setEstado("ABIERTO");
     }
@@ -53,6 +59,7 @@ public class TicketTest {
         assertNotNull(resultado);
         assertEquals(1, resultado.getId());
         assertEquals("Ticket de prueba", resultado.getDescripcion());
+        assertEquals("Juan Perez", resultado.getNombre());
     }
 
     @Test

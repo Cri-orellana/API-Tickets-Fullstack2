@@ -24,6 +24,11 @@ public class TicketService {
         }
         Ticket ticket = new Ticket();
         ticket.setId(entity.getId());
+
+        ticket.setNombre(entity.getNombre());
+        ticket.setEmail(entity.getEmail());
+        ticket.setAsunto(entity.getAsunto());
+
         ticket.setDescripcion(entity.getDescripcion());
         ticket.setEstado(entity.getEstado());
         return ticket;
@@ -35,6 +40,11 @@ public class TicketService {
         }
         TicketEntity entity = new TicketEntity();
         entity.setId(ticket.getId());
+
+        entity.setNombre(ticket.getNombre());
+        entity.setEmail(ticket.getEmail());
+        entity.setAsunto(ticket.getAsunto());
+
         entity.setDescripcion(ticket.getDescripcion());
         entity.setEstado(ticket.getEstado());
         return entity;
@@ -50,11 +60,15 @@ public class TicketService {
     public Ticket getTicketById(Integer id) {
         return ticketRepository.findById(id)
                 .map(this::convertToTicket)
-                .orElseThrow(null);
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket no encontrado con ID: " + id));
     }
 
     public Ticket createTicket(Ticket ticket) {
         TicketEntity entityToSave = convertToTicketEntity(ticket);
+        if (entityToSave.getEstado() == null) {
+            entityToSave.setEstado("ABIERTO");
+        }
         TicketEntity savedEntity = ticketRepository.save(entityToSave);
         return convertToTicket(savedEntity);
     }
