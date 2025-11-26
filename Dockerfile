@@ -1,13 +1,7 @@
-FROM eclipse-temurin:17-jdk AS compile
-WORKDIR /app
-COPY . .
-RUN chmod +x mvnw
-RUN ./mvnw clean package 
+FROM amazoncorretto:21
 
-FROM eclipse-temurin:17-jdk AS prod
 WORKDIR /app
 
-COPY --from=compile /app/target/*.jar app.jar
-EXPOSE 8081 
+COPY target/*.jar app.jar
 
-CMD [ "java","-jar","app.jar" ]
+ENTRYPOINT ["java", "-jar", "app.jar"]
